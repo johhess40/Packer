@@ -1,0 +1,31 @@
+#  Local .terraform directories
+**/.terraform/*
+*/variables
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*/golang
+
+# .tfvars files
+*.tfvars
+
+# any terraform lock files
+.terraform.lock.hcl
+
+# Cache objects
+packer_cache/
+
+# Crash log
+crash.log
+
+# https://www.packer.io/guides/hcl/variables
+# Exclude all .pkrvars.hcl files, which are likely to contain sentitive data, 
+# such as password, private keys, and other secrets. These should not be part of 
+# version control as they are data points which are potentially sensitive and 
+# subject to change depending on the environment.
+#
+*.pkrvars.hcl
+*.auto.pkrvars.hcl
+
+# For built boxes
+*.box

@@ -1,0 +1,68 @@
+---
+- name: Configure DNS Forwarder
+  hosts: all
+  gather_facts: no 
+  vars_files:
+  - "../dnsvars.yml"
+
+  tasks:
+    - name: Point to Microsoft Repo SSL
+      yum:
+        name: "*"
+        state: latest
+        disablerepo: "*"
+        enablerepo: "*microsoft*"
+      become: True
+      become_user: root
+
+    - name: Install BIND for DNS
+      yum:
+        name: 
+        - bind
+        - bind-utils
+        state: latest
+      become: True
+      become_user: root
+
+    - name: Enable BIND 
+      systemd:
+        name: named
+        enabled: yes
+        masked: no
+      become: True
+      become_user: root
+
+    - name: Start Unbound
+      systemd:
+        name: named
+        state: started
+      become: True
+      become_user: root 
+
+    - name: Update Firwewall
+      firewalld:
+        port: "{{ fw_port }}"
+        permanent: true
+        state: enabled
+      become: True
+      become_user: root
+
+    - name: Reload Firewall
+      systemd:
+        state: restarted 
+        daemon_reload: yes
+        name: firewalld
+      become: True
+      become_user: root
+    
+    - name: Copy named.conf
+      ansible.builtin.copy:
+        src: ../../conf/named.conf
+        dest: /etc/named.conf
+        owner: root
+        group: root
+        mode: '0744'
+        backup: yes
+      become: True
+      become_user: root
+    

@@ -1,0 +1,19 @@
+---
+- name: Configure DNS Forwarder
+  hosts: all
+  gather_facts: no 
+
+  ##Sample playbook for easy demonstration
+  tasks:
+
+    - name: Install IIS and DNS
+      win_feature:
+        name:
+          - Web-Server
+          - DNS
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+      register: win_feature
+
+    

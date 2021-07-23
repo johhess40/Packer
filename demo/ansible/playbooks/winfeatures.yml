@@ -1,0 +1,22 @@
+---
+- name: Install some features
+  hosts: all
+  gather_facts: no 
+
+  vars_files:
+  - "../group_vars/winvars.yml"
+
+  ##Testing playbook for validati
+  tasks:
+
+    - name: Install IIS and DNS
+      win_feature:
+        name:
+          - Web-Server
+          - DNS
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+      register: win_feature
+
+    

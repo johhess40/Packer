@@ -1,0 +1,55 @@
+---
+- name: Configure Apache Web Server
+  hosts: all
+  gather_facts: no 
+
+  tasks:
+    - name: Point to Microsoft Repo SSL
+      yum:
+        name: "*"
+        state: latest
+        disablerepo: "*"
+        enablerepo: "*microsoft*"
+      become: True
+      become_user: root
+
+    - name: Install Apache
+      yum:
+        name: 
+        - httpd
+        state: latest
+      become: True
+      become_user: root
+
+    - name: Enable httpd 
+      systemd:
+        name: httpd
+        enabled: yes
+        masked: no
+      become: True
+      become_user: root
+
+    - name: Start httpd
+      systemd:
+        name: httpd
+        state: started
+      become: True
+      become_user: root 
+
+    - name: Update Firwewall
+      firewalld:
+        port: 80/tcp
+        permanent: true
+        state: enabled
+      become: True
+      become_user: root
+
+    - name: Reload Firewall
+      systemd:
+        state: restarted 
+        daemon_reload: yes
+        name: firewalld
+      become: True
+      become_user: root
+    
+    

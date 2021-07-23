@@ -1,0 +1,64 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# This is the first iteration of the Burlington pipeline
+# Plan for a multi stage pipeline that automates releases into Dev/Test potentially
+# Going with this approach so that it can be easily replicated in GitHub Actions at some point
+
+trigger:
+- main
+
+stages:
+  - stage: Validate_Packer
+    displayName: Validate a Packer Build
+    jobs:
+      - job: Validate
+        displayName: Validate Packer Configs
+        pool: 
+          vmImage: ubuntu-latest
+        steps:
+
+            #Downloading the secure file that holds our env vars
+          - task: DownloadSecureFile@1
+            name: packerVars
+            inputs:
+              secureFile: 'dnsvars.auto.pkrvars.hcl'
+          
+          # - task: Bash@3
+          #   inputs:
+          #     targetType: inline
+          #     script: |
+          #       'apt-get install packer'
+          
+          - task: Bash@3
+            inputs:
+              targetType: inline
+              script: 'mv $(packerVars.secureFilePath) $(System.DefaultWorkingDirectory)/rhelDnsForwarder'
+          
+          - task: DownloadSecureFile@1
+            name: ansibleVars
+            inputs:
+              secureFile: 'dnsvars.yml'
+          
+          - task: Bash@3
+            inputs:
+              targetType: inline
+              script: 'mv $(ansibleVars.secureFilePath) $(System.DefaultWorkingDirectory)/Ansible'
+
+            #Copy files from directory storing tfvars to the Build Directory
+          - task: PackerTool@0
+
+          - task: Bash@3
+            inputs:
+              targetType: inline
+              script: 'packer validate -var-file $(System.DefaultWorkingDirectory)/rhelDnsForwarder/dnsvars.auto.pkrvars.hcl $(System.DefaultWorkingDirectory)/rhelDnsForwarder/rheldns.pkr.hcl'
+
+          - task: Bash@3
+            inputs:
+              targetType: inline
+              script: 'packer build -force -var-file $(System.DefaultWorkingDirectory)/rhelDnsForwarder/dnsvars.auto.pkrvars.hcl $(System.DefaultWorkingDirectory)/rhelDnsForwarder/rheldns.pkr.hcl'
+
+  
+
