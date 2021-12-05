@@ -3,7 +3,7 @@ This Packer build creates a DNS forwarder
 */
 
 
-source "azure-arm" "rheldnsburl" {
+source "azure-arm" "rheldns" {
   azure_tags = {
     Environment = "${var.envTag}"
     Owner       = "${var.ownerTag}"
@@ -38,7 +38,7 @@ source "azure-arm" "rheldnsburl" {
 }
 
 build {
-  sources = ["source.azure-arm.rheldnsburl"]
+  sources = ["source.azure-arm.rheldns"]
 
   provisioner "ansible" {
     playbook_file = "${var.playbookPath}"
