@@ -3,7 +3,6 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-# This is the first iteration of the Burlington pipeline
 # Plan for a multi stage pipeline that automates releases into Dev/Test potentially
 # Going with this approach so that it can be easily replicated in GitHub Actions at some point
 
